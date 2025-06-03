@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { FiSun, FiMoon, FiCheckCircle } from 'react-icons/fi';
+import AboutPage from './about/page';
+import ContactPage from './contact/page';
+import OurServicesPage from './ourservices/page';
+import TestimonialsPage from './testimonials/page';
 /**
  * 
  */
@@ -280,14 +284,23 @@ export default function HomePage() {
                         </button>
                       </div>
                     </div>
+                    
                   </div>
                 )}
               </div>
             );
           })}
         </div>
-
+ 
       </div>
+     
+<div>
+  <AboutPage darkMode={darkMode}/>
+<ContactPage darkMode={darkMode}/>
+<OurServicesPage darkMode={darkMode}/>
+<TestimonialsPage darkMode={darkMode}/>
+</div>
+
     </main>
   );
 }
