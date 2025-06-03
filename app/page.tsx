@@ -2,22 +2,73 @@
 
 import React, { useEffect, useState } from 'react';
 import { FiSun, FiMoon, FiCheckCircle } from 'react-icons/fi';
+/**
+ * 
+ */
 
 type ThemeChoice = 'light' | 'dark' | 'system';
 
 const subjects = [
-  { name: 'Islamic', desc: 'Free Islamic exam PDFs for 2024', file: 'islamic.pdf' },
-  { name: 'Somali', desc: 'Somali language exams and papers', file: 'Somali2024.pdf' },
-  { name: 'Arabic', desc: 'Arabic subject exam PDFs for 2024', file: 'arabic.pdf' },
-  { name: 'English', desc: 'English language exam papers', file: 'english.pdf' },
-  { name: 'Physics', desc: 'Physics exam materials for 2024', file: 'physics.pdf' },
-  { name: 'Math', desc: 'Mathematics exams and practice PDFs', file: 'Math2024.pdf' },
-  { name: 'History', desc: 'History exam papers for 2024', file: 'history.pdf' },
-  { name: 'Geo', desc: 'Geography exam PDFs', file: 'geo.pdf' },
-  { name: 'Tech', desc: 'Technical subject exam papers', file: 'tech.pdf' },
-  { name: 'Business', desc: 'Business studies exam PDFs', file: 'business.pdf' },
-  { name: 'Biology', desc: 'Biology exam papers for 2024', file: 'Biology2024.pdf' },
-  { name: 'Chem', desc: 'Chemistry exam PDFs and materials', file: 'chem.pdf' },
+  {
+    name: 'Islamic',
+    desc: 'Free Islamic exam PDFs for 2024',
+    file: 'islamic.pdf',
+  },
+  {
+    name: 'Somali',
+    desc: 'Somali language exams and papers',
+    file: 'Somali2024.pdf',
+  },
+  {
+    name: 'Arabic',
+    desc: 'Arabic subject exam PDFs for 2024',
+    file: 'arabic.pdf',
+  },
+  {
+    name: 'English',
+    desc: 'English language exam papers',
+    file: 'english.pdf',
+  },
+  {
+    name: 'Physics',
+    desc: 'Physics exam materials for 2024',
+    file: 'physics.pdf',
+  },
+  {
+    name: 'Math',
+    desc: 'Mathematics exams and practice PDFs',
+    file: 'Math2024.pdf',
+  },
+  {
+    name: 'History',
+    desc: 'History exam papers for 2024',
+    file: 'history.pdf',
+  },
+  {
+    name: 'Geo',
+    desc: 'Geography exam PDFs',
+    file: 'geo.pdf',
+  },
+  {
+    name: 'Tech',
+    desc: 'Technical subject exam papers',
+    file: 'tech.pdf',
+  },
+  {
+    name: 'Business',
+    desc: 'Business studies exam PDFs',
+    file: 'business.pdf',
+  },
+  {
+    name: 'Biology',
+    desc: 'Biology exam papers for 2024',
+    file: 'Biology2024.pdf',
+  },
+  {
+    name: 'Chem',
+    desc: 'Chemistry exam PDFs and materials',
+    file: 'chem.pdf',
+  },
 ];
 
 export default function HomePage() {
@@ -35,15 +86,9 @@ export default function HomePage() {
     }
   }, []);
 
-  // Apply theme based on choice
+  // Update darkMode based on explicit 'dark' choice only
   useEffect(() => {
-    if (themeChoice === 'system') {
-      // Match system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setDarkMode(prefersDark);
-    } else {
-      setDarkMode(themeChoice === 'dark');
-    }
+    setDarkMode(themeChoice === 'dark');
   }, [themeChoice]);
 
   // Save theme choice on change
@@ -51,20 +96,14 @@ export default function HomePage() {
     localStorage.setItem('caawiye-theme-choice', themeChoice);
   }, [themeChoice]);
 
-  const toggleTheme = () => {
-    if (themeChoice === 'dark') {
-      setThemeChoice('light');
-    } else {
-      setThemeChoice('dark');
-    }
-  };
-
   const handleDownload = (subject: string, file: string) => {
+    // Check if file is available
     const link = document.createElement('a');
     link.href = `/pdfs/${file}`;
     link.download = file;
     document.body.appendChild(link);
 
+    // Check if file exists by attempting fetch HEAD request
     fetch(link.href, { method: 'HEAD' })
       .then((res) => {
         if (res.ok) {
@@ -96,8 +135,8 @@ export default function HomePage() {
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* Theme Selector + Toggle */}
-        <div className="flex justify-end items-center mb-6 px-4 space-x-4">
+        {/* Theme Selector */}
+        <div className="flex justify-end mb-6 px-4">
           <select
             aria-label="Choose Theme"
             value={themeChoice}
@@ -113,14 +152,6 @@ export default function HomePage() {
             <option value="system">System</option>
             <option value="dark">Dark</option>
           </select>
-
-          <button
-            aria-label="Toggle Theme"
-            onClick={toggleTheme}
-            className="p-2 rounded-full bg-green-600 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition"
-          >
-            {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-          </button>
         </div>
 
         {/* Welcome Section */}
@@ -205,46 +236,47 @@ export default function HomePage() {
                   )}
                 </div>
 
-                {/* Info Overlay */}
+                {/* Overlay Card */}
                 {isOpened && (
                   <div
-                    onClick={() => setOpenedOverlay(null)}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-6 cursor-pointer"
-                    aria-modal="true"
                     role="dialog"
-                    aria-labelledby="overlayTitle"
-                    aria-describedby="overlayDesc"
+                    aria-modal="true"
+                    aria-labelledby="overlay-title"
+                    aria-describedby="overlay-desc"
+                    className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center p-4 z-50"
+                    onClick={() => setOpenedOverlay(null)}
                   >
                     <div
-                      className={`max-w-lg w-full bg-opacity-90 backdrop-blur-md rounded-3xl p-6 shadow-lg
-                        ${darkMode ? 'bg-gray-800 text-green-300' : 'bg-green-50 text-green-900'}`}
-                      onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                      className="bg-gray-900 rounded-lg max-w-md w-full p-6 relative"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <h3
-                        id="overlayTitle"
-                        className="text-center font-extrabold text-3xl mb-3"
+                        id="overlay-title"
+                        className="text-2xl font-extrabold mb-3 text-white"
                       >
                         {name}
                       </h3>
                       <p
-                        id="overlayDesc"
-                        className="text-center font-medium text-lg max-w-lg mx-auto"
+                        id="overlay-desc"
+                        className="text-white mb-6"
                       >
                         {desc}
                       </p>
-                      <div className="text-center mt-6">
+                      <div className="flex gap-4 justify-end">
                         <button
                           onClick={() => {
-                            setOpenedOverlay(null);
                             handleRead(name);
+                            setOpenedOverlay(null);
                           }}
-                          className={`rounded-lg py-2 px-6 font-semibold shadow-md focus:outline-none focus:ring-2 transition
-                            ${darkMode
-                              ? 'bg-green-700 text-green-200 hover:bg-green-600 focus:ring-green-500'
-                              : 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-400'
-                            }`}
+                          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 transition"
                         >
                           Mark as Read
+                        </button>
+                        <button
+                          onClick={() => setOpenedOverlay(null)}
+                          className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-5 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                        >
+                          Close
                         </button>
                       </div>
                     </div>
